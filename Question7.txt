@@ -1,0 +1,8 @@
+UPDATE vaccination_records
+SET daily_vaccinations = 
+(SELECT 
+  MEDIAN(daily_vaccinations) OVER (PARTITION BY country ORDER BY daily_vaccinations DESC) 
+FROM vaccination_records
+WHERE country = vaccination_records.country
+AND daily_vaccinations IS NOT NULL)
+WHERE daily_vaccinations IS NULL;
